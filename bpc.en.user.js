@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.3.6.1
+// @version         4.3.6.2
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -1839,8 +1839,16 @@ else if (matchDomain('bloomberg.com')) {
     }
   }
   function addLinkValue(item_text, item_href, elem) {
+    if (item_href.startsWith('bbg://securities/') && !item_href.split('bbg://securities/')[1].includes('/')) {
+      let path = '/quote/';
+      if (item_href.match(/\/\d+[A-Z]%20[A-Z]{2}%20Equity/)) {
+        path = '/profile/company/';
+        item_href = item_href.replace('%20Equity', '').replace('%20', ':');
+      }
+      item_href = 'https://www.bloomberg.com' + path + item_href.split('bbg://securities/')[1];
+    }
     let sub_elem = makeLink(item_href, item_text, 'text-decoration: underline;');
-    if (item_href.startsWith('http') && !item_href.startsWith(window.location.origin))
+    if (item_href.startsWith('http') && (!item_href.startsWith(window.location.origin) || item_href.match(/\.bloomberg\.com\/(quote|profile\/company)\//)))
       sub_elem.target = '_blank';
     elem.appendChild(sub_elem);
   }
@@ -1871,14 +1879,10 @@ else if (matchDomain('bloomberg.com')) {
       if (item.subType === 'person') {
         elem.appendChild(document.createTextNode(item.content[0].value));
       } else if (item.subType === 'security') {
-        if (item.data && item.data.link && item.data.link.href && item.data.link.href.startsWith('bbg://securities/') && !item.data.link.href.split('bbg://securities/')[1].includes('/')) {
-          let url_base = 'https://www.bloomberg.com/quote/';
-          let href = item.data.link.href;
-          if (href.match(/\/\d+Z%20[A-Z]{2}%20Equity/)) {
-            url_base = 'https://www.bloomberg.com/profile/company/';
-            href = href.replace('%20Equity', '').replace('%20', ':');
-          }
-          addLinkValue(item.content[0].value, url_base + href.split('bbg://securities/')[1], elem);
+        if (item.data && item.data.link && item.data.link.href)
+          addLinkValue(item.content[0].value, item.data.link.href, elem);
+        else
+          elem.appendChild(document.createTextNode(item.content[0].value));
       } else if (item.subType === 'story' && item.data && item.data.link) {
         if (item.data.link.destination && item.data.link.destination.web)
           addLinkValue(item.content[0].value, item.data.link.destination.web, elem);
