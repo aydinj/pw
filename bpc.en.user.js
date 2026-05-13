@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.3.6.4
+// @version         4.3.6.5
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -4402,15 +4402,8 @@ else if (matchDomain('startribune.com')) {
 }
 
 else if (matchDomain('statnews.com')) {
-  let paywall = document.querySelector('div.restricted-content-breaker');
-  if (paywall) {
-    removeDOMElement(paywall);
-    let article = document.querySelector('div.entry-content, section.the-content');
-    if (article) {
-      let url = window.location.href;
-      article.before(googleSearchToolLink(url));
-    }
-  }
+  let url = window.location.href;
+  getArchive(url, 'div.restricted-content-breaker', '', '.the-content', '', 'main section, div[style*="counter-reset:"]');
   let ads = 'div.header-ad-wrap, div[class*="dfp-ad"]';
   hideDOMStyle(ads);
 }
