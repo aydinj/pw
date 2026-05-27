@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.3.7.6
+// @version         4.3.7.7
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -2219,7 +2219,8 @@ else if (matchDomain('business-standard.com')) {
         let json = JSON.parse(json_script.text);
         if (json && json.props.pageProps.data.htmlContent) {
           let json_text = json.props.pageProps.data.htmlContent;
-          let article = document.querySelector('div[class^="MainStory_storycontent__"], div[class^="blueprint-story-detail_storbpcontent_"]');
+          let article_sel = 'article div[class^="MainStory_storycontent__"], article div[class^="blueprint-story-detail_storbpcontent_"]';
+          let article = document.querySelector(article_sel);
           if (json_text && article) {
             removeDOMElement(json_script);
             article.innerHTML = '';
@@ -2227,8 +2228,11 @@ else if (matchDomain('business-standard.com')) {
             let doc = parser.parseFromString('<div>' + json_text + '</div>', 'text/html');
             let article_new = doc.querySelector('div');
             if (article_new) {
+              if (mobile)
+                article_new.style = 'width: 90%; margin: 20px;';
               let zoom_images = article_new.querySelectorAll('div > img.zoomimg');
               for (let img of zoom_images) {
+                img.style = 'margin: 20px 0px;';
                 let caption = img.parentNode.querySelector('div[style]');
                 if (caption)
                   caption.removeAttribute('style');
@@ -2692,7 +2696,7 @@ else if (matchDomain('economictimes.com')) {
       let content = document.querySelector('.paywall[style="display:none;"]');
       if (content) {
         let parser = new DOMParser();
-        let doc = parser.parseFromString('<div style="margin: 20px 0px;">' + content.innerText + '</div>', 'text/html');
+        let doc = parser.parseFromString('<div style="margin: 20px 0px;">' + breakText(content.innerText).replace(/\n/g, '<br>') + '</div>', 'text/html');
         let content_new = doc.querySelector('div');
         let charts = content_new.querySelectorAll('iframe[id^="datawrapper-chart-"]');
         for (let elem of charts) {
@@ -2738,7 +2742,7 @@ else if (matchDomain('economictimes.indiatimes.com')) {
     let full_text = document.querySelector('div.paywall.p1');
     if (content && full_text) {
       if (!full_text.innerText.includes('["datawrapper-height"]'))
-        content.innerText = full_text.innerText;
+        content.innerText = breakText(full_text.innerText);
       else {
         let amphtml = document.querySelector('head > link[rel="amphtml"]');
         if (amphtml)
