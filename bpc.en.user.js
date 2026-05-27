@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.3.7.5
+// @version         4.3.7.6
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -4910,7 +4910,7 @@ else if (matchDomain(['thejuggernaut.com', 'jgnt.co'])) {
     if (json_script) {
       try {
         let json = JSON.parse(json_script.text);
-        if (json && json.props.pageProps.post.fields) {
+        if (json && getNestedKeys(json, 'props.pageProps.post.fields')) {
           let url_next = json.query.slug;
           if (url_next && !window.location.pathname.includes(url_next))
             refreshCurrentTab();
@@ -4921,6 +4921,8 @@ else if (matchDomain(['thejuggernaut.com', 'jgnt.co'])) {
           if (article) {
             article.innerHTML = '';
             article.removeAttribute('class');
+            if (mobile)
+              article.style = 'margin: 0px 20px;';
             let fade = document.querySelectorAll('div.bg-gradient-to-b');
             for (let elem of fade)
               elem.removeAttribute('class');
