@@ -4377,11 +4377,6 @@ else if (matchDomain('slideshare.net')) {
     limit_overlay.classList.remove('limit-overlay');
 }
 
-else if (matchDomain('sltrib.com')) {
-  let ads = 'div.ad, div.stickyAd, div.stickyTopAd, div[class^="sltrib_medrec"]';
-  hideDOMStyle(ads);
-}
-
 else if (matchDomain('sloanreview.mit.edu')) {
   if (window.location.pathname.startsWith('/article/')) {
     window.setTimeout(function () {
