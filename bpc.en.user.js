@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.3.9.6
+// @version         4.3.9.7
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -2629,6 +2629,18 @@ else if (matchDomain('dnevnik.bg')) {
                       }
                     }
                   } else if (elem.type && !['embed', 'gallery', 'quote'].includes(elem.type)) {
+                    if (elem.value.match(/^\$\w{2}$/)) {
+                      let par_script;
+                      let filter = script_start + elem.value.slice(1) + ':';
+                      for (let script of scripts) {
+                        if (script.text.startsWith(filter)) {
+                          par_script = script;
+                          break;
+                        }
+                      }
+                      if (par_script)
+                        elem.value = par_script.text.split(filter)[1].split(/^\w{3,5},/)[1].split(/"\]\)$/)[0].replace(/\\u003c/g, '<').replace(/\\u003e/g, '>');
+                    }
                     let doc = parser.parseFromString('<div role="paragraph">' + elem.value + '</div>', 'text/html');
                     par = doc.querySelector('div');
                   }
