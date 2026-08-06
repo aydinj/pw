@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.1.0
+// @version         4.4.1.1
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -4428,6 +4428,28 @@ else if (matchDomain('spectator.com')) {
 
 else if (matchDomain('spglobal.com')) {
   setCookie('count', '', 'spglobal.com', '/', 0);
+  let paywall = document.querySelector('div.article-access-banner');
+  if (paywall) {
+    removeDOMElement(paywall);
+    let article = document.querySelector('div#researchContainer');
+    if (article) {
+      let json_script = document.querySelector('script#__NEXT_DATA__');
+      if (json_script) {
+        try {
+          let json = JSON.parse(json_script.text);
+          if (json.props.pageProps.props[0].html) {
+            let json_text = parseHtmlEntities(json.props.pageProps.props[0].html);
+            let parser = new DOMParser();
+            let doc = parser.parseFromString('<div style="margin-bottom: 200px;">' + json_text + '</div>', 'text/html');
+            let article_new = doc.querySelector('div');
+            article.parentNode.replaceChild(article_new, article);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+  }
 }
 
 else if (matchDomain('standardmedia.co.ke')) {
