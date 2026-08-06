@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.0.3
+// @version         4.4.1.0
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -1865,7 +1865,7 @@ else if (matchDomain('bloomberg.com')) {
         if (false && par.data.attachment && par.data.attachment.title)
           figure.appendChild(document.createTextNode(par.data.attachment.title));
         let img = document.createElement('img');
-        img.src = par.data.chart.fallback;
+        img.src = par.data.chart.fallback || par.data.chart.src;
         figure.appendChild(img);
         if (false && par.data.attachment && (par.data.attachment.source || par.data.attachment.footnote)) {
           let caption = document.createElement('figcaption');
@@ -2152,9 +2152,15 @@ else if (matchDomain('bloomberg.com')) {
       }
     }
   } else if (window.location.pathname.startsWith('/quote/')) {
-    let blur_chart = document.querySelector('div[class^="summary_contentBlur_"]');
-    if (blur_chart)
-      blur_chart.removeAttribute('class');
+    let blur_class = '_contentBlur_';
+    let blur_sel = 'div[class*="' + blur_class + '"]';
+    document.querySelectorAll(blur_sel).forEach(e => e.removeAttribute('class'));
+    waitDOMElement(blur_sel, 'DIV', x => {
+      x.classList.forEach(y => {
+        if (y.includes(blur_class))
+          x.classList.remove(y);
+      });
+    });
   } else if (window.location.pathname.startsWith('/profile/company/')) {
     let scripts = document.querySelectorAll('script[type="application/ld+json"]');
     let json_script;
@@ -4413,6 +4419,11 @@ else if (matchDomain('sofrep.com')) {
   }
   let banners = document.querySelectorAll('#scrollerCTA, #botCta');
   removeDOMElement(...banners);
+}
+
+else if (matchDomain('spectator.com')) {
+  let ads = 'div[id^="midcontent"]:empty';
+  hideDOMStyle(ads);
 }
 
 else if (matchDomain('spglobal.com')) {
