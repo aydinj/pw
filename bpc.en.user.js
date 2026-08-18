@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.2.3
+// @version         4.4.2.6
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -3245,6 +3245,7 @@ else if (matchDomain('historytoday.com')) {
       paywall.before(app_div);
       removeDOMElement(paywall);
     }
+    hideDOMStyle('div#block-signupblock');
   }
 }
 
@@ -4024,37 +4025,6 @@ else if (matchDomain('nytimes.com')) {
 
 else if (matchDomain('ogj.com')) {
   document.querySelectorAll('div.image-content > div[src] > img[src*="auto=format"]').forEach(e => e.src = e.src.split('?')[0]);
-}
-
-else if (matchDomain('on3.com')) {
-  func_post = function () {
-    let article = document.querySelector(article_sel);
-    if (article) {
-      let par = article.querySelector('figure ~ div[style*="max-height:"]');
-      if (par) {
-        if (par.innerText.match(/^\s*<p>/)) {
-          let parser = new DOMParser();
-          let doc = parser.parseFromString('<div>' + par.innerText + '</div>', 'text/html');
-          let par_new = doc.querySelector('div');
-          par.parentNode.replaceChild(par_new, par);
-          addStyle(article_sel + ' p {margin: 20px;}');
-        } else if (par.innerText.length < 5)
-          header_nofix(article, '', 'BPC > no archive-fix');
-      }
-    }
-  }
-  let url = window.location.href;
-  let paywall_sel = 'div[data-template-type="barrier"]';
-  let article_sel = 'article';
-  window.setTimeout(function () {
-    getArchive(url, paywall_sel + '[class]', {rm_attrib: 'class'}, article_sel);
-    let noscroll = document.querySelectorAll('html.scroll-lock, body.scroll-lock');
-    for (let elem of noscroll) {
-      elem.removeAttribute('class');
-      elem.removeAttribute('style');
-    }
-  }, 0);
-  hideDOMStyle('div#blocker, div[data-ui="ad"], div[class^="RegWallBarrier_container_"], ' + paywall_sel);
 }
 
 else if (matchDomain('outlookbusiness.com')) {
