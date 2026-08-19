@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.2.6
+// @version         4.4.2.7
 // @description     Bypass Paywalls of news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -893,8 +893,14 @@ else if (matchDomain('ft.com')) {
     if (title)
       document.title = title.content;
   }
-  let url = window.location.href;
-  getArchive(url, 'div#barrier-page', '', 'div.n-layout__row--content', '', 'div[style*="article-body"]', 'body');
+  let url = window.location.href.split(/[#?]/)[0];
+  let paywall_sel = 'div#barrier-page';
+  let paywall = document.querySelector(paywall_sel);
+  if (paywall) {
+    let url_app = url.replace('/www.', '/app.');
+    header_nofix('body', '', 'BPC > open full article (app)', url_app);
+    getArchive(url, paywall_sel, '', 'div.n-layout__row--content', '', 'div[style*="article-body"]', 'body');
+  }
   let banners = '.js-article-ribbon, div.o-ads, pg-slot';
   hideDOMStyle(banners);
 }
