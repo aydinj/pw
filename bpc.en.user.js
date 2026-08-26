@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.3.3
+// @version         4.4.3.4
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -4385,8 +4385,98 @@ else if (matchDomain('statnews.com')) {
 }
 
 else if (matchDomain('stereogum.com')) {
-  let ads = 'div.adthrive-ad';
-  hideDOMStyle(ads);
+  let paywall = document.querySelector('div[class^="ContentGate_wrapper"]');
+  if (paywall) {
+    removeDOMElement(paywall);
+    let article = document.querySelector('div[class^="PostContent_truncate"]');
+    if (article) {
+      article.removeAttribute('class');
+      let json_script = document.querySelector('script#__NEXT_DATA__');
+      if (json_script) {
+        let parser = new DOMParser();
+        function addPar(par, article) {
+          let doc = parser.parseFromString(par.innerHTML, 'text/html');
+          let par_new = doc.querySelector(par.tagName);
+          if (par_new)
+            article.appendChild(par_new);
+        }
+        function addIframe(par, article) {
+          if (par.attributes) {
+            let iframe = document.createElement('iframe');
+            for (let att of par.attributes) {
+              if (att.name === 'src' && att.value)
+                iframe.src = att.value;
+              else if (att.name === 'height')
+                iframe.style.height = att.value;
+            }
+            iframe.style.width = '100%';
+            iframe.style.border = 'none';
+            if (!iframe.style.height) {
+              iframe.style.height = '600px';
+              iframe.scrolling = 'yes';
+            }
+            if (iframe.src)
+              article.appendChild(iframe);
+          }
+        }
+        try {
+          let json = JSON.parse(json_script.text);
+          let json_slug = getNestedKeys(json, 'query.slug');
+          if (json_slug && Array.isArray(json_slug) && json_slug.length) {
+            let url_next = json_slug[0];
+            if (url_next && !window.location.pathname.startsWith('/' + url_next + '/'))
+              refreshCurrentTab();
+          }
+          let pars = getNestedKeys(json, 'props.pageProps.blocks');
+          if (pars && pars.length) {
+            let intro = article.querySelector('p');
+            removeDOMElement(intro);
+            for (let par of pars) {
+              if (par.innerHTML && par.tagName) {
+                addPar(par, article);
+              } else if (par.name === 'lede/iframe') {
+                addIframe(par, article);
+              } else if (par.name === 'lede/flex-list-item') {
+                if (par.innerBlocks) {
+                  for (let item of par.innerBlocks) {
+                    if (item.attributes) {
+                      for (let att of item.attributes) {
+                        if (att.name === 'titleValue' && att.value) {
+                          let title = document.createElement('h2');
+                          title.innerText = att.value;
+                          article.appendChild(title);
+                        }
+                      }
+                    }
+                    if (item.name === 'lede/iframe')
+                      addIframe(item, article);
+                    else if (item.name === 'core/paragraph')
+                      addPar(item, article);
+                    else if (item.name === 'core/group') {
+                      if (item.innerBlocks) {
+                        for (let elem of item.innerBlocks) {
+                          if (elem.innerHTML && elem.tagName)
+                            addPar(elem, article);
+                          else
+                            console.log(elem);
+                        }
+                      }
+                    } else
+                      console.log(item);
+                  }
+                }
+              } else if (!['lede/affiliate', 'lede/review-card'].includes(par.name))
+                console.log(par);
+            }
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+    let ads = 'div.adthrive-ad';
+    hideDOMStyle(ads);
+  }
 }
 
 else if (matchDomain('stocknews.com')) {
