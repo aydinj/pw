@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.3.4
+// @version         4.4.3.5
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -3114,6 +3114,15 @@ else if (matchDomain('historytoday.com')) {
   }
 }
 
+else if (matchDomain('hotnews.ro')) {
+  let paywall = document.querySelector('div.hn-paywall[hidden]');
+  if (paywall) {
+    paywall.classList.remove('hn-paywall');
+    paywall.removeAttribute('hidden');
+    paywall.removeAttribute('inert');
+  }
+}
+
 else if (matchDomain('inc.com')) {
   let paywall = document.querySelector('div.paywall');
   if (paywall) {
@@ -4385,12 +4394,11 @@ else if (matchDomain('statnews.com')) {
 }
 
 else if (matchDomain('stereogum.com')) {
-  let paywall = document.querySelector('div[class^="ContentGate_wrapper"]');
+  let paywall = document.querySelector('div[class^="PostContent_truncate"]');
   if (paywall) {
-    removeDOMElement(paywall);
-    let article = document.querySelector('div[class^="PostContent_truncate"]');
+    paywall.removeAttribute('class');
+    let article = paywall;
     if (article) {
-      article.removeAttribute('class');
       let json_script = document.querySelector('script#__NEXT_DATA__');
       if (json_script) {
         let parser = new DOMParser();
@@ -4422,7 +4430,9 @@ else if (matchDomain('stereogum.com')) {
         try {
           let json = JSON.parse(json_script.text);
           let json_slug = getNestedKeys(json, 'query.slug');
-          if (json_slug && Array.isArray(json_slug) && json_slug.length) {
+          if (!json_slug) {
+            refreshCurrentTab();
+          } else if (json_slug && Array.isArray(json_slug) && json_slug.length) {
             let url_next = json_slug[0];
             if (url_next && !window.location.pathname.startsWith('/' + url_next + '/'))
               refreshCurrentTab();
