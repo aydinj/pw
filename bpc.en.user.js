@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.4.1
+// @version         4.4.4.2
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -1551,9 +1551,17 @@ else if (matchDomain('al-monitor.com')) {
       }
     }
   }
+  let article_hidden = document.querySelector('div.ab-control');
+  let article_main = document.querySelector('div[class^="ab-variation"]');
+  if (article_hidden && article_main) {
+    removeDOMElement(article_hidden);
+    article_main.removeAttribute('class');
+    article_main.removeAttribute('style');
+  }
   let url = window.location.href;
+  let paywall_sel = 'div.node__paywall';
   let article_sel = 'article';
-  getArchive(url, 'div.node__paywall-cta', '', article_sel, '', article_sel, article_sel + ' > div');
+  getArchive(url, paywall_sel, '', article_sel, '', article_sel, article_sel + ' > div');
 }
 
 else if (matchDomain('americanbanker.com') || matchDomain(usa_arizent_custom_domains)) {
@@ -3779,7 +3787,7 @@ else if (matchDomain('newslaundry.com')) {
 }
 
 else if (matchDomain('newsweek.com')) {
-  let ads = 'div#topad, div[id^="dfp-ad-"]';
+  let ads = 'div#topad, div[id^="dfp-ad-"], div#piano-inline-engagement';
   hideDOMStyle(ads);
 }
 
