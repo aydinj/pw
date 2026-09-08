@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.4.4
+// @version         4.4.4.5
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -4314,6 +4314,12 @@ else if (matchDomain('sofrep.com')) {
   removeDOMElement(...banners);
 }
 
+else if (matchDomain('spacenews.com')) {
+  getJsonUrl('div.newspack-content-gate__gate', '', 'div.entry-content');
+  let ads = 'spacenews-zone-container';
+  hideDOMStyle(ads);
+}
+
 else if (matchDomain('spectator.com')) {
   let ads = 'div[id^="midcontent"]:empty';
   hideDOMStyle(ads);
@@ -5606,7 +5612,8 @@ else if (matchDomain(usa_penske_media_domains)) {
 }
 
 else if (matchDomain(usa_tribune_domains)) {
-  getJsonUrl('div.paywall-container', '', 'div.body-copy', {art_class: 'body-copy'});
+  let paywall_sel = 'div.sspw-wrapper';
+  getJsonUrl(paywall_sel, '', 'div.body-copy', {art_class: 'body-copy'});
   let ads = 'div.dfp-ad, div.bx-slab, div.sbn-widget-body, div#mobile-adhesion';
   hideDOMStyle(ads);
 }
