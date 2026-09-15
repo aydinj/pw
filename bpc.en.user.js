@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.4.6
+// @version         4.4.4.7
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -2663,7 +2663,7 @@ else if (matchDomain('economictimes.com')) {
       let article_blocker = document.querySelector('.articleBlocker');
       removeDOMElement(paywall, intro, article_blocker);
     }
-    let ads = 'amp-ad, amp-fx-flying-carpet, div.ads, div.taboolaAd, amp-consent';
+    let ads = 'amp-ad, amp-fx-flying-carpet, div.ads, div.taboolaAd';
     hideDOMStyle(ads);
   } else {
     window.setTimeout(function () {
@@ -4874,17 +4874,15 @@ else if (matchDomain('thedispatch.com')) {
 }
 
 else if (matchDomain('theglobeandmail.com')) {
-  let lazy_images = document.querySelectorAll('img[src^="data:image/"][data-src]');
-  for (let elem of lazy_images)
-    elem.src = elem.getAttribute('data-src');
+  document.querySelectorAll('img[src^="data:image/"][data-src]').forEach(e => e.src = e.getAttribute('data-src'));
   let fusion_script = document.querySelector('script#fusion-metadata');
   if (fusion_script && fusion_script.text.includes('Fusion.globalContent=')) {
     try {
       let json = JSON.parse(fusion_script.text.split('Fusion.globalContent=')[1].split(';Fusion.')[0]);
       window.setTimeout(function () {
-        let audio_tts = document.querySelector('div > div#audio-panel > p[class^="ArticlePlayer__LoginCopy"]');
+        let audio_tts = document.querySelector('div#audio-panel > p[class*="LoginCopy"]');
         if (audio_tts) {
-          let audio_json = getNestedKeys(json, 'additional_properties.tts_audio');
+          let audio_json = getNestedKeys(json, 'additional_properties.audio.tts');
           if (audio_json) {
             let audio_src = audio_json.url_en_M || audio_json.url_en_F;
             if (audio_src) {
