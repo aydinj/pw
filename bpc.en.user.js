@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.4.7
+// @version         4.4.4.8
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -888,9 +888,6 @@ else if (matchDomain('ft.com')) {
       elem.parentNode.removeAttribute('style');
       elem.querySelectorAll('tr[style*="visibility:hidden"]').forEach(e => e.style.visibility = 'visible');
     }
-    let title = document.querySelector('head > meta[property="og:title"][content]');
-    if (title)
-      document.title = title.content;
   }
   let url = window.location.href.split(/[#?]/)[0];
   let paywall_sel = 'div#barrier-page';
@@ -898,6 +895,9 @@ else if (matchDomain('ft.com')) {
   if (paywall) {
     let url_app = url.replace('/www.', '/app.');
     header_nofix('body', '', 'BPC > open full article (app)', url_app);
+    let title = document.querySelector('head > meta[property="og:title"][content]');
+    if (title)
+      document.title = title.content;
     getArchive(url, paywall_sel, '', 'div.n-layout__row--content', '', 'div[style*="article-body"]', 'body');
   }
   let html = document.querySelector('html[style*="overflow"]');
@@ -4312,12 +4312,6 @@ else if (matchDomain('sofrep.com')) {
   }
   let banners = document.querySelectorAll('#scrollerCTA, #botCta');
   removeDOMElement(...banners);
-}
-
-else if (matchDomain('spacenews.com')) {
-  getJsonUrl('div.newspack-content-gate__gate', '', 'div.entry-content');
-  let ads = 'spacenews-zone-container';
-  hideDOMStyle(ads);
 }
 
 else if (matchDomain('spectator.com')) {
