@@ -55,6 +55,7 @@
 // @connect         archive.vn
 // @connect         djservices.io
 // @exclude         *://*.amazon-adsystem.com/*
+// @exclude         *://*.bounceexchange.com/*
 // @exclude         *://*.consentmanager.net/*
 // @exclude         *://*.centrefrance.com/*
 // @exclude         *://*.criteo.com/*
@@ -69,6 +70,7 @@
 // @exclude         *://*.gracenote.com/*
 // @exclude         *://*.instagram.com/*
 // @exclude         *://*.klarna.com/*
+// @exclude         *://*.liadm.com/*
 // @exclude         *://*.mediafire.com/*
 // @exclude         *://*.openx.net/*
 // @exclude         *://*.outbrain.com/*
@@ -184,17 +186,6 @@ else if (matchDomain('nzherald.co.nz')) {
   }, 100);
   let banners = '#premium-toaster, div[id$="article-body-ad"]';
   hideDOMStyle(banners);
-}
-
-else if (matchDomain(usa_adv_local_domains)) {
-  function adv_main() {
-    if (window.adiData) {
-      window.adiData.entryTags = 0;
-    }
-  }
-  window.setTimeout(function () {
-    insert_script(adv_main);
-  }, 100);
 }
 
 window.setTimeout(function () {
@@ -1430,11 +1421,9 @@ else if (matchDomain(uk_reach_domains) || document.querySelector('footer a[href=
 } else {
 
 if (matchDomain(usa_adv_local_domains)) {
-  if (!window.location.search.startsWith('?outputType=amp')) {
+  if (!window.location.search.startsWith('?outputType=amp'))
     document.querySelectorAll('.article__paragraph--blur').forEach(e => e.classList.remove('article__paragraph--blur'));
-    amp_redirect('div.paywall', '', window.location.pathname + '?outputType=amp');
-  }
-  let ads = 'div.ad, div.ad-inner, div.ad-unit, div#below-toprail, div[id^="taboola"]';
+  let ads = 'div.ad, div[class*="module__ad-"], div#below-toprail, div.content-blocker__wrapper, button.everlit-overlay-btn';
   hideDOMStyle(ads);
 }
 
