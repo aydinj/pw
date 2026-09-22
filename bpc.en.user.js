@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.4.9
+// @version         4.4.5.0
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -3617,19 +3617,8 @@ else if (matchDomain('nationalgeographic.com')) {
 }
 
 else if (matchDomain('nationalreview.com')) {
-  if (!window.location.pathname.endsWith('/amp/')) {
-    let paywall_sel = 'div.continue-reading';
-    let paywall = document.querySelector(paywall_sel);
-    if (paywall) {
-      let amphtml = document.querySelector('head > link[rel="amphtml"][href]');
-      if (amphtml && !amphtml.href.includes(window.location.pathname)) {
-        removeDOMElement(paywall);
-        refreshCurrentTab();
-      } else
-        getJsonUrl(paywall_sel, '', 'div.article-content', {art_class: 'article-content article-content--headless'});
-    }
-  }
-  let banners = 'div.zephr-wrapper, div#bc-root, div.cookie-text';
+  setCookie('nr_premium_views', '', 'nationalreview', '/', 0);
+  let banners = 'div#bc-root, aside[aria-label="Meter Ribbon"]';
   let ads = 'amp-ad, .ad-unit, .ad-skeleton, amp-connatix-player, div[class*="-connatix-"]';
   hideDOMStyle(banners + ', ' + ads);
 }
