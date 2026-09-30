@@ -4712,60 +4712,6 @@ else if (matchDomain('thebulletin.org')) {
 }
 
 else if (matchDomain('thedailybeast.com')) {
-  let paywall = document.querySelector('div.Body__paywall-container');
-  if (paywall) {
-    removeDOMElement(paywall);
-    let json_script = document.querySelector('script[displayName="initialState"]');
-    if (json_script) {
-      let json_str = json_script.text.substring(json_script.textContent.indexOf('{'));
-      try {
-        let json = JSON.parse(json_str);
-        if (json.body) {
-          let pars = json.body.sections;
-          let cards = json.body.cards;
-          if (pars) {
-            let mobile_doc = document.querySelector('div.Mobiledoc');
-            if (mobile_doc) {
-              let mobile_doc_text = mobile_doc.innerText.replace(/(\r|\n)/g, '');
-              for (let elem of pars) {
-                let par_elem = '';
-                if (elem[0] === 1) {
-                  if (elem[1] === 'p') {
-                    let par = '';
-                    for (let part of elem[2])
-                      par += part[3];
-                    if (par && !mobile_doc_text.includes(par)) {
-                      par_elem = document.createElement('p');
-                      par_elem.innerText = par;
-                    }
-                  }
-                } else if (elem[0] === 10) {
-                  if (cards && cards[elem[1]]) {
-                    let card = cards[elem[1]];
-                    if (card[0] === 'pt-image') {
-                      par_elem = document.createElement('p');
-                      let par_fig = makeFigure(card[1].url, card[1].title + ' ' + card[1].credit);
-                      par_elem.appendChild(par_fig);
-                    } else if (card[0] === 'pt-fancy-links-card') {
-                      par_elem = document.createElement('p');
-                      let par_link = document.createElement('a');
-                      par_link.href = card[1].links;
-                      par_link.innerText = card[1].linksData[0].long_headline;
-                      par_elem.appendChild(par_link);
-                    }
-                  }
-                }
-                if (par_elem)
-                  mobile_doc.appendChild(par_elem);
-              }
-            }
-          }
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }
   document.querySelectorAll('div > div.tdb-ads-block').forEach(e => hideDOMElement(e.parentNode));
   let ads = 'aside.body-ad, aside.ad--outstream-video, aside[data-name="ADS"]';
   hideDOMStyle(ads);
