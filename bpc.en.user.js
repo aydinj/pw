@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.5.4
+// @version         4.4.5.5
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -56,6 +56,7 @@
 // @connect         djservices.io
 // @exclude         *://*.amazon-adsystem.com/*
 // @exclude         *://*.bounceexchange.com/*
+// @exclude         *://*.btloader.com/*
 // @exclude         *://*.consentmanager.net/*
 // @exclude         *://*.centrefrance.com/*
 // @exclude         *://*.criteo.com/*
@@ -68,7 +69,9 @@
 // @exclude         *://*.googleapis.com/*
 // @exclude         *://*.googletagmanager.com/*
 // @exclude         *://*.gracenote.com/*
+// @exclude         *://*.infogram.com/*
 // @exclude         *://*.instagram.com/*
+// @exclude         *://*.jwplayer.com/*
 // @exclude         *://*.klarna.com/*
 // @exclude         *://*.liadm.com/*
 // @exclude         *://*.mediafire.com/*
@@ -2782,31 +2785,15 @@ else if (matchDomain('economictimes.indiatimes.com')) {
 }
 
 else if (matchDomain('economist.com')) {
-  if (window.location.pathname.includes('/podcasts/')) {
-    header_nofix('section[data-body-id]', 'div[aria-labelledby="paywall-heading"]');
-  } else if (window.location.pathname.startsWith('/interactive/')) {
+  if (window.location.pathname.startsWith('/interactive/')) {
     document.querySelectorAll('html, body').forEach(e => e.style = 'overflow: visible !important');
   } else {
-    let paywall_sel = 'div#tp-regwall';
-    let article_sel = 'main';
-    let video = document.querySelector('iframe[src^="https://www.youtube.com/"]');
-    func_post = function () {
-      if (video) {
-        let video_new = document.querySelector('div[old-src^="https://www.youtube.com/"]');
-        if (video_new && video_new.parentNode)
-          video_new.parentNode.replaceChild(video, video_new);
-      }
-      if (mobile) {
-        let grids = document.querySelectorAll('div[style*="grid-template-columns"]');
-        for (let elem of grids)
-          elem.removeAttribute('style');
-        let lazy_images = document.querySelectorAll('figure img[loading="lazy"][style]');
-        for (let elem of lazy_images)
-          elem.style = 'width: 95%;';
-      }
+    let paywall = document.querySelector('div#tp-regwall');
+    if (paywall) {
+      let url = window.location.href.split(/[#?]/)[0];
+      paywall.parentNode.before(googleSearchToolLink(url));
+      removeDOMElement(paywall);
     }
-    let url = window.location.href;
-    getArchive(url, paywall_sel, '', 'main');
   }
   let ads = 'div[class*="adComponent"], div.ad';
   hideDOMStyle(ads);
@@ -4779,9 +4766,9 @@ else if (matchDomain('thedailybeast.com')) {
       }
     }
   }
-  let ads = document.querySelectorAll('div > div.tdb-ads-block');
-  for (let ad of ads)
-    hideDOMElement(ad.parentNode);
+  document.querySelectorAll('div > div.tdb-ads-block').forEach(e => hideDOMElement(e.parentNode));
+  let ads = 'aside.body-ad, aside.ad--outstream-video, aside[data-name="ADS"]';
+  hideDOMStyle(ads);
 }
 
 else if (matchDomain('thediplomat.com')) {
