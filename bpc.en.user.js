@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.5.5
+// @version         4.4.5.6
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -445,13 +445,6 @@ else if (matchDomain(['crikey.com.au', 'smartcompany.com.au', 'themandarin.com.a
   }
   let ads = 'div.wp-block-pm-ad-placeholder-block, div[style*="linear-gradient"]';
   hideDOMStyle(ads);
-}
-
-else if (matchDomain('forbes.com.au')) {
-  setCookie('blaize_session', '', 'forbes.com.au', '/', 0);
-  getJsonUrl('div[class*="_gate"]', '', 'div.article-page__content-body');
-  let fade = document.querySelector('div[style*="background-image: linear-gradient"]');
-  removeDOMElement(fade);
 }
 
 else if (matchDomain('macrobusiness.com.au')) {
