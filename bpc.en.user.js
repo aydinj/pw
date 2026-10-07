@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.6.1
+// @version         4.4.6.2
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -2971,12 +2971,13 @@ else if (matchDomain(['haaretz.co.il', 'haaretz.com', 'themarker.com'])) {
 
 else if (matchDomain('harpers.org')) {
   setCookie('hr_session', '', 'harpers.org', '/', 0);
-  let paywall = document.querySelector('div#full-paywall');
+  let paywall = document.querySelector('div.paywall-message-wrap');
   if (paywall) {
-    paywall.removeAttribute('id');
-    header_nofix(paywall, '', 'BPC > no fix (for older articles archive may work)');
-    let url = window.location.href;
-    paywall.before(archiveLink(url));
+    removeDOMElement(paywall, document.querySelector('div[data-preview-control]'));
+    let preview = document.querySelector('div[data-preview-treatment][hidden]');
+    if (preview)
+      preview.removeAttribute('hidden');
+    header_nofix('div.article-content');
   }
   let ads = 'div#ctas';
   hideDOMStyle(ads);
