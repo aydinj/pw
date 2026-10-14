@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.6.5
+// @version         4.4.6.6
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -830,7 +830,7 @@ else if (matchDomain('decanter.com')) {
 else if (matchDomain('economist.com')) {
   let url = window.location.href;
   let paywall_sel = 'div#tp-regwall';
-  let article_sel = 'article > div > div';
+  let article_sel = 'main';
   if (window.location.pathname.startsWith('/interactive/')) {
     document.querySelectorAll('html, body').forEach(e => e.style = 'overflow: visible !important');
   } else if (window.location.pathname.includes('/podcasts/')) {
@@ -857,10 +857,10 @@ else if (matchDomain('economist.com')) {
     }
     let paywall = document.querySelector(paywall_sel);
     if (paywall) {
-      let main = document.querySelector('main');
-      if (main)
-        main.before(externalLink(['freedium-mirror.cfd', 'wallhop.io'], 'https://{domain}/{url}', url, 'BPC > Try for full article text:'));
-      getArchive(url, paywall_sel, '', article_sel, '', article_sel, 'main');
+      let article = document.querySelector(article_sel);
+      if (article)
+        article.before(externalLink(['freedium-mirror.cfd', 'wallhop.io'], 'https://{domain}/{url}', url, 'BPC > Try for full article text:'));
+      getArchive(url, paywall_sel, '', article_sel);
     }
   }
   let ads = 'div[class*="adComponent"], div.ad';
