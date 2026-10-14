@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.6.6
+// @version         4.4.6.8
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -2509,9 +2509,26 @@ else if (matchDomain('cnn.com')) {
 }
 
 else if (matchDomain('columbian.com')) {
-  setCookie('blaize_session', '', 'columbian.com', '/', 0);
-  header_nofix('story', 'div#inline-paywall');
-  let ads = 'div.modal, div#sticky-footer-cta, div.article-inline, div[id^="ad-instory-"], div#onesignal-slidedown-container';
+  let audio_tts = document.querySelector('instaread-player');
+  func_post = function () {
+    if (mobile) {
+      let pars = document.querySelectorAll(article_sel + ' > section > div[style]');
+      for (let par of pars) {
+        par.style = 'width: 90%; margin: auto;';
+        par.parentNode.removeAttribute('style');
+      }
+    }
+    if (audio_tts) {
+      let audio_tts_arch = document.querySelector('div#instaread-widget');
+      if (audio_tts_arch)
+        audio_tts_arch.parentNode.replaceChild(audio_tts, audio_tts_arch);
+    }
+    document.querySelectorAll(article_sel + ' > div[style]').forEach(e => e.remove());
+  }
+  let url = window.location.href;
+  let article_sel = 'story';
+  getArchive(url, 'div#inline-paywall', '', article_sel);
+  let ads = 'div.modal, div[style*="linear-gradient"]';
   hideDOMStyle(ads);
 }
 
@@ -4749,6 +4766,18 @@ else if (matchDomain('thediplomat.com')) {
       let banner = document.querySelector('section > a[href^="https://thediplomat.com/subscriptions"]');
       if (banner)
         removeDOMElement(banner.parentNode);
+    }
+  } else {
+    let paywall = document.querySelector('aside#tda-gated-appendix');
+    if (paywall) {
+      let gated_body = document.querySelector('section#tda-gated-body');
+      removeDOMElement(paywall, gated_body);
+      let hidden_article = document.querySelector('aside[hidden] > div#app_story_content');
+      if (hidden_article) {
+        hidden_article.removeAttribute('style');
+        hidden_article.className = 'td-prose';
+        hidden_article.parentNode.removeAttribute('hidden');
+      }
     }
   }
   let ads = 'aside.td-ad-container--labeled, div[data-actirise], div.td-ad, div.sparteo-corner';
