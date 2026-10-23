@@ -3777,8 +3777,7 @@ else if (matchDomain('newsday.com')) {
   let nd_lock = document.querySelector('html[class]');
   if (nd_lock)
     nd_lock.removeAttribute('class');
-  let ads = 'div.ad';
-  hideDOMStyle(ads);
+  hideDOMStyle('div.ad, div[data-name="open-paywall-message"]');
 }
 
 else if (matchDomain('newslaundry.com')) {
