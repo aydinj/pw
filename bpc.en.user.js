@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.7.6
+// @version         4.4.7.7
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -847,7 +847,7 @@ else if (matchDomain('economist.com')) {
     if (paywall) {
       let article = document.querySelector(article_sel);
       if (article)
-        article.before(externalLink(['freedium-mirror.cfd', 'wallhop.io'], 'https://{domain}/{url}', url, 'BPC > Try for full article text:'));
+        article.before(externalLink(['freedium-mirror.cfd'], 'https://{domain}/{url}', url, 'BPC > Try for full article text:'));
       getArchive(url, paywall_sel, '', article_sel);
     }
   }
@@ -1153,6 +1153,10 @@ else if (matchDomain('the-tls.com')) {
   let fade = 'div.tls-single-article__closed-paywall-wrapper';
   let ads = 'div[class*="tls-single-article__ad-slot"]';
   hideDOMStyle(fade + ', ' + ads);
+}
+
+else if (matchDomain('thecritic.co.uk')) {
+  hideDOMStyle('div.sf-cta-post');
 }
 
 else if (matchDomain('thelawyer.com')) {
@@ -1673,6 +1677,8 @@ else if (matchDomain('axios.com')) {
                   }
                   block_nr++;
                 }
+                if (block_nr < 5)
+                  header_nofix(article);
               }
             }
           } catch (err) {
@@ -3386,7 +3392,7 @@ else if (matchDomain('interestingengineering.com')) {
         try {
           let json = JSON.parse(json_script.text);
           if (json['@graph']) {
-            let article_json = json['@graph'].filter(x => x['@type'] === 'NewsArticle' && x.hasPart && x.hasPart.value)[0];
+            let article_json = json['@graph'].find(x => x['@type'] === 'NewsArticle' && x.hasPart && x.hasPart.value);
             if (article_json) {
               let body_content = article.querySelector('div.body-content') || article;
               if (body_content)
