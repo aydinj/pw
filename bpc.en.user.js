@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.7.5
+// @version         4.4.7.6
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -3370,40 +3370,36 @@ else if (matchDomain('insights.citeline.com')) {
 }
 
 else if (matchDomain('interestingengineering.com')) {
-  let article = document.querySelector('div.body-content');
+  let article = document.querySelector('div#article-content');
   if (article) {
     let article_hidden = document.querySelector('div#taboola-article-content');
     if (article_hidden)
       article_hidden.removeAttribute('id');
     let art_pars = article.querySelectorAll('p');
-    let paywall = document.querySelector('div#paywall-div');
+    let paywall_sel = 'div#paywall-div';
+    let paywall = document.querySelector(paywall_sel);
     if (paywall || art_pars.length < 5) {
       removeDOMElement(paywall);
-      let scripts = document.querySelectorAll('script:not([src], [type])');
-      let json_script;
-      let script_start = 'self.__next_f.push([1,"\\';
-      let script_len = 0;
-      for (let script of scripts) {
-        if (script.text.startsWith(script_start) && script.text.length > script_len) {
-          json_script = script;
-          script_len = script.text.length;
-        }
-      }
+      hideDOMStyle(paywall_sel, 2);
+      let json_script = document.querySelector('script[type="application/ld+json"]');
       if (json_script) {
         try {
-          let json_text = parseHtmlEntities('\\' + json_script.text.split(script_start)[1].split('"])')[0].replace(/\\u003c/g, '<').replace(/\\u003e/g, '>').replace(/\\u0026/g, '&').replace(/\\"/g, '"')).replace(/\\n/g, '');
-          let parser = new DOMParser();
-          let doc = parser.parseFromString('<div>' + json_text + '</div>', 'text/html');
-          let article_new = doc.querySelector('div');
-          article_new.className = article.className;
-          article.parentNode.replaceChild(article_new, article);
+          let json = JSON.parse(json_script.text);
+          if (json['@graph']) {
+            let article_json = json['@graph'].filter(x => x['@type'] === 'NewsArticle' && x.hasPart && x.hasPart.value)[0];
+            if (article_json) {
+              let body_content = article.querySelector('div.body-content') || article;
+              if (body_content)
+                body_content.innerText = breakText(article_json.hasPart.value);
+            }
+          }
         } catch (err) {
           console.log(err);
         }
       }
     }
   }
-  let ads = 'div[id^="harz"]';
+  let ads = 'div[class$="_adContainer"]';
   hideDOMStyle(ads);
 }
 
