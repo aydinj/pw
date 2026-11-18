@@ -4270,9 +4270,9 @@ else if (matchDomain('startribune.com')) {
 
 else if (matchDomain('statnews.com')) {
   let url = window.location.href;
-  let paywall_sel = cs_param.paywall_sel || 'div.restricted-content-breaker';
-  let article_sel = cs_param.article_sel || '.the-content';
-  let article_src_sel = cs_param.article_src_sel || 'main section, div[style*="counter-reset:"]';
+  let paywall_sel = 'div.restricted-content-breaker';
+  let article_sel = '.the-content';
+  let article_src_sel = 'main section, div[style*="counter-reset:"]';
   let paywall = document.querySelector(paywall_sel);
   if (paywall) {
     let article = document.querySelector(article_sel);
