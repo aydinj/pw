@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.4.9.4
+// @version         4.4.9.5
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -2969,22 +2969,6 @@ else if (matchDomain('hbr.org')) {
       }
     }
   }
-}
-
-else if (matchDomain('hilltimes.com')) {
-  function hilltimes_main(node) {
-    getJsonUrl('div.paywallcont', '', 'div#entry-content');
-  }
-  let paywall_sel = 'div.paywallcont';
-  let paywall = document.querySelector(paywall_sel);
-  if (true) {
-    if (paywall)
-      hilltimes_main(paywall);
-    else
-      waitDOMElement(paywall_sel, 'DIV', hilltimes_main, false);
-  }
-  let banner = 'section.hide_this_section';
-  hideDOMStyle(banner);
 }
 
 else if (matchDomain('hindustantimes.com')) {
