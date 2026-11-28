@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Bypass Paywalls Clean - en
-// @version         4.5.0.1
+// @version         4.5.0.2
 // @description     Bypass Paywalls of English (& other) language news sites
 // @author          magnolia1234
 // @downloadURL     https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=userscript/bpc.en.user.js
@@ -182,7 +182,7 @@ window.setTimeout(function () {
 
 var ca_torstar_domains = ['niagarafallsreview.ca', 'stcatharinesstandard.ca', 'thepeterboroughexaminer.com', 'therecord.com', 'thespec.com', 'thestar.com', 'wellandtribune.ca'];
 var ke_nation_media_domains = ['businessdailyafrica.com', 'nation.africa'];
-var medium_custom_domains = ['betterprogramming.pub', 'towardsdatascience.com'];
+var medium_custom_domains = ['betterprogramming.pub'];
 var sg_sph_media_domains = ['businesstimes.com.sg', 'straitstimes.com'];
 var uk_dmg_media_domains = ['dailymail.com', 'thisismoney.co.uk'];
 var uk_iconic_media_domains = ['scotsman.com', 'yorkshirepost.co.uk'];
@@ -5413,7 +5413,7 @@ else if (matchDomain(usa_hearst_comm_domains) || document.querySelector('head > 
   hideDOMStyle(ads);
 }
 
-else if (matchDomain(usa_lee_ent_domains.concat(ca_torstar_domains)) || document.querySelector('head > meta[name="tncms-access-version"]')) {
+else if (matchDomain(usa_lee_ent_domains.concat(ca_torstar_domains)) || document.querySelector('head > meta[name="tncms-access-version"], head > meta[property="og:image"][content*=".townnews.com/"]')) {
   function unscramble(t) {
     for (var n = "", i = 0, r = t.length; i < r; i++) {
       var s = t.charCodeAt(i);
